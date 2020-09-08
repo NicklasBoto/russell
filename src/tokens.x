@@ -5,8 +5,8 @@ module Lexer where
 %wrapper "basic"
 
 $digit = 0-9
-$alpha = [a-z]
-$ALPHA = [A-Z]
+$a = [a-z]
+$A = [A-Z]
 
 tokens :-
     
@@ -19,8 +19,19 @@ tokens :-
     class                                { \s -> Builtin "class"    }
     "->"                                 { \s -> TokenArrow         }
     "=>"                                 { \s -> TokenDoubleArrow   }
+    "<-"                                 { \s -> TokenLeftArrow     }
     ";"                                  { \s -> TokenSemi          }
+    ","                                  { \s -> TokenComma         }
     $digit+                              { \s -> TokenInt (read s)  }
+    \\                                   { \s -> TokenBackslash     }
+    "λ"                                  { \s -> TokenLambda        }
+    "+"                                  { \s -> BinOp "+"          }
+    "*"                                  { \s -> BinOp "*"          }
+    "-"                                  { \s -> BinOp "-"          }
+    "/"                                  { \s -> BinOp "/"          }
+    ` $a [$a $A \_ \' $digit]* `         { BinOp . init . tail      }
+    \"([^\"\\]*(\\.[^\"\\]*)*)\"         { \s -> TokenString s      }
+    \' $a \'                             { \(_:s:_) -> TokenChar s  }
     ::\=                                 { \s -> TokenData          }
     \|                                   { \s -> TokenPipe          }
     :                                    { \s -> TokenTypeSign      }
@@ -29,17 +40,23 @@ tokens :-
     \)                                   { \s -> TokenRParen        }
     \{                                   { \s -> TokenLBracket      }
     \}                                   { \s -> TokenRBracket      }
-    \_ [$alpha $ALPHA $digit]*           { \s -> TokenHole  s       }
+    \_ [$a $A $digit]*                   { \s -> TokenHole  s       }
     "?"                                  { \s -> TokenQMark         }
-    $alpha [$alpha $ALPHA \_ \' $digit]* { \s -> TokenIdent s       }
-    $ALPHA [$alpha $ALPHA \' $digit]*    { \s -> TokenType  s       }
+    $a [$a $A \_ \' $digit]*             { \s -> TokenIdent s       }
+    $A [$a $A \' $digit]*                { \s -> TokenType  s       }
 
 {
 -- Lexed tokens
 data Token = TokenArrow
+           | TokenLeftArrow
            | TokenDoubleArrow
            | TokenSemi
+           | TokenComma
            | TokenInt Int
+           | TokenBackslash
+           | TokenLambda
+           | TokenString String
+           | TokenChar   Char
            | TokenData
            | TokenPipe
            | TokenTypeSign
@@ -53,6 +70,7 @@ data Token = TokenArrow
            | TokenIdent String
            | TokenType  String
            | Builtin    String
+           | BinOp      String
            deriving Show
 
 scanTokens = alexScanTokens
