@@ -29,6 +29,7 @@ import Data.List
     ident       { TokenIdent $$      }
     int         { TokenInt   $$      }
     type        { TokenType  $$      }
+    hole        { TokenHole  $$      }
     pattern     { Builtin "pattern"  }
     case        { Builtin "case"     }
     export      { Builtin "export"   }
@@ -61,7 +62,8 @@ Exp : pattern "{" Pattern "}"  { PatternExp   $3 }
     | "λ" ident "->" Exp       { LambdaExp $2 $4 }
     | Const                    { ConstExp     $1 }
     | ident "(" Args ")"       { CallExp   $1 $3 }
-    | case Exp "{" Case "}"    { CaseExp   $2 $4 }
+:   | case Exp "{" Case "}"    { CaseExp   $2 $4 }
+    | hole                     { HoleExp      $1 }
 
 Args : {- empty -}             { [    ] }
      | Exp                     { [ $1 ] }
@@ -107,6 +109,7 @@ data Exp = PatternExp [ (Const, Exp) ]
          | OpExp Name Exp Exp
          | CallExp Name [ Exp ]
          | CaseExp Exp  [ (Exp, Exp) ]
+         | HoleExp String
          deriving Show
 
 data Const = Int32 Int
@@ -127,5 +130,5 @@ data Stm = TypeStm Name TypeSign
 
 type Name  = String
 
-main = print . calc . scanTokens
+parse = print . calc . scanTokens
 }
