@@ -15,7 +15,7 @@ hi def link rFloat Float
 syn match rTypeClass "[A-Z]\+[a-z]*" 
 hi def link rTypeClass Type
 
-syn keyword rKeyword pattern case class instance
+syn keyword rKeyword pattern case class instance for let in if then else return upto
 hi def link rKeyword Statement
 
 syn match rIdent "\I\+\s*\(:\)\@="
@@ -27,7 +27,7 @@ hi def link rType Constant
 syn match rMacro "\I\+!\s*\((\)\@="
 hi def link rMacro Special
 
-syn match rFCall "\I\+\s*\((\)\@="
+syn match rFCall "\I\+\((\)\@="
 hi def link rFCall Function
 
 syn keyword rCommentSpex contained TODO FIXME XXX HACK COOL
