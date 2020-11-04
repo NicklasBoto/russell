@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 846d13bf1e312dff7a1ee2212cb46923e1c6ac4202f10f25a58329e5a52a46fe
+-- hash: b6ea7148385c217b53ab866b703b196925cf5440770828f8af425976a5db5cc9
 
 name:           russell
 version:        0.1.0.0
@@ -28,10 +28,10 @@ source-repository head
 library
   exposed-modules:
       AST
+      Codegen
       Lexer
       Lib
       Parser
-      SimonsExample
   other-modules:
       Paths_russell
   hs-source-dirs:
