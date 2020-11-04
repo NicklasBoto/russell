@@ -18,7 +18,10 @@ hi def link rTypeClass Type
 syn keyword rKeyword pattern case class instance for let in if then else return upto
 hi def link rKeyword Statement
 
-syn match rIdent "\I\+\s*\(:\)\@="
+syn match rIType "\I\+\s*\(:\)\@="
+hi def link rIType Identifier
+
+syn match rIdent "\I\+\s*\(=\)\@="
 hi def link rIdent Identifier
 
 syn match rType "[A-Z]\+[a-z]*"
