@@ -35,7 +35,7 @@ tokens :-
     ::\=                                 { \s -> TokenData          }
     \|                                   { \s -> TokenPipe          }
     :                                    { \s -> TokenTypeSign      }
-    :\=                                  { \s -> TokenAssign        }
+    \=                                   { \s -> TokenAssign        }
     \(                                   { \s -> TokenLParen        }
     \)                                   { \s -> TokenRParen        }
     \{                                   { \s -> TokenLBracket      }

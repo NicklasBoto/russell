@@ -13,28 +13,25 @@ import Data.List
     "=>"        { TokenDoubleArrow   }
     "<-"        { TokenLeftArrow     }
     "::="       { TokenData          }
-    "|"         { TokenPipe          }
     ":"         { TokenTypeSign      }
     ";"         { TokenSemi          }
     ","         { TokenComma         }
-    "λ"         { TokenLambda        }
     str         { TokenString $$     }
     chr         { TokenChar   $$     }
-    ":="        { TokenAssign        }
+    "="         { TokenAssign        }
     "("         { TokenLParen        }
     ")"         { TokenRParen        }
     "{"         { TokenLBracket      }
     "}"         { TokenRBracket      }
-    "?"         { TokenQMark         }
+--    "?"         { TokenQMark         }
     ident       { TokenIdent $$      }
     int         { TokenInt   $$      }
     type        { TokenType  $$      }
     hole        { TokenHole  $$      }
-    pattern     { Builtin "pattern"  }
     case        { Builtin "case"     }
-    export      { Builtin "export"   }
-    instance    { Builtin "instance" }
-    class       { Builtin "class"    }
+--    export      { Builtin "export"   }
+--    instance    { Builtin "instance" }
+--    class       { Builtin "class"    }
     binop       { BinOp $$           }
 
 %right "->"
@@ -43,26 +40,33 @@ import Data.List
 
 %%
 
-Stm : type "::=" TypeDef         { TypeStm $1 $3    }
-    | ident ":" Type             { SignStm $1 $3    }
-    | ident ":" "?"              { SignStm $1 ["?"] } 
-    | ident ":=" Exp             { FuncStm $1 [$3]  }
-    | ident ":=" "{" Exps "}"    { FuncStm $1 $4    }
-    | class type ident   "{" "}" { Class            }
-    | export type        "{" "}" { Export $2        }
-    | export             "{" "}" { Export "Main"    }
-    | instance type type "{" "}" { Instance         }
-    | Exp                        { Eval $1          }
+Stms :: { Program }
+     : Stms Stm     { $2 : $1 }
+     | Stm          {  [ $1 ] }
 
-Exp : pattern "{" Pattern "}"  { PatternExp   $3 }
-    | "(" Exp ")"              {              $2 }
+Stm : type "::=" "{" TypeDef "}"      { TypeStm       $1 $4 }
+    | ident ":" Type                  { SignStm       $1 $3 }
+    | ident ":" Type "{" Pattern "}"  { PatternStm $1 $3 $5 }
+    | ident "=" Exp                   { FuncStm  $1 [$3] [] }
+    | ident "=" Exp ":" Type          { FuncStm  $1 [$3] $5 } -- spruce this up
+    | ident "=" "{" Exps "}"          { FuncStm  $1  $4  [] } -- pull out the type
+    | ident "=" "{" Exps "}" ":" Type { FuncStm  $1  $4  $7 }
+--    | class type ident   "{" "}"     { Class               }
+--    | export type        "{" "}"     { Export $2           }
+--    | export             "{" "}"     { Export "Main"       }
+--    | instance type type "{" "}"     { Instance            }
+--    | Exp                             { Eval $1 }
+
+Exp : "(" Exp ")"              {              $2 }
     | Exp binop Exp            { OpExp  $2 $1 $3 }
     | ident "<-" Exp           { LetExp    $1 $3 }
     | ident                    { VarExp       $1 }
-    | "λ" ident "->" Exp       { LambdaExp $2 $4 }
+    | ident "->" Exp           { LambdaExp $1 $3 }
     | Const                    { ConstExp     $1 }
     | ident "(" Args ")"       { CallExp   $1 $3 }
-:   | case Exp "{" Case "}"    { CaseExp   $2 $4 }
+    | type                     { TypeCon   $1 [] }
+    | type "(" Args ")"        { TypeCon   $1 $3 }
+    | case Exp "{" Case "}"    { CaseExp   $2 $4 }
     | hole                     { HoleExp      $1 }
 
 Args : {- empty -}             { [    ] }
@@ -70,32 +74,31 @@ Args : {- empty -}             { [    ] }
      | Args "," Exp            { $3 : $1 }
 
 Case : Case1                   { [ $1 ] }
-     | Case Case1              { $2 : $1 }
+     | Case ";" Case1          { $3 : $1 }
 
-Case1 : Exp "=>" Exp ";" { ($1 , $3) }
+Case1 : Exp "=>" Exp { ($1 , $3) }
 
 Pattern : Pattern1             { [ $1 ] }
-        | Pattern Pattern1     { $2 : $1 }
+        | Pattern ";" Pattern1 { $3 : $1 }
 
-Pattern1 : Const "=>" Exp ";"  { ($1 , $3) }
+Pattern1 : Exp "=>" Exp      { ($1 , $3) }
 
 Const : int                 { Int32 $1 }
       | str                 { Str   $1 }
       | chr                 { Chr   $1 }
 
-Exps : Exp1                 { [ $1 ] }
-     | Exps Exp1            { $2 : $1 }
-
-Exp1 : Exp ";"              { $1 }
+Exps : Exp                  { [ $1 ] }
+     | Exps ";" Exp         { $3 : $1 }
 
 TypeDef : type              { [ $1 ] }
-        | TypeDef "|" type  { $3 : $1 }
+        | TypeDef ";" type  { $3 : $1 }
 
 Type : type                 { [ $1 ] }
      | Type "->" type       { $3 : $1 }  
 
 {
 -- TODO Maybe make this prettier
+-- monadic parser please
 parseError :: [Token] -> a
 parseError ts = error $ "Parse error\n" ++ intercalate "\n" (map show ts)
 
@@ -108,6 +111,7 @@ data Exp = PatternExp [ (Const, Exp) ]
          | ConstExp Const
          | OpExp Name Exp Exp
          | CallExp Name [ Exp ]
+         | TypeCon Name [ Exp ]
          | CaseExp Exp  [ (Exp, Exp) ]
          | HoleExp String
          deriving Show
@@ -121,7 +125,8 @@ type TypeSign = [ Name ]
 
 data Stm = TypeStm Name TypeSign
          | SignStm Name TypeSign
-         | FuncStm Name [ Exp ]
+         | FuncStm Name [ Exp ] TypeSign
+         | PatternStm Name TypeSign [ (Exp,Exp) ]
          | Class
          | Export String
          | Instance
@@ -130,5 +135,5 @@ data Stm = TypeStm Name TypeSign
 
 type Name  = String
 
-parse = print . calc . scanTokens
+parse = print . reverse . calc . scanTokens
 }
