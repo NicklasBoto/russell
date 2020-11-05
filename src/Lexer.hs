@@ -2,7 +2,9 @@
 {-# LANGUAGE CPP #-}
 {-# LINE 1 "tokens.x" #-}
 
+{-# LANGUAGE RecordWildCards #-}
 module Lexer where
+-- import ParseMonad
 
 #if __GLASGOW_HASKELL__ >= 603
 #include "ghcconfig.h"
@@ -80,23 +82,23 @@ type Byte = Word8
 -- The input type
 
 
+type AlexInput = (AlexPosn,     -- current position,
+                  Char,         -- previous char
+                  [Byte],       -- pending bytes on current char
+                  String)       -- current input string
 
+ignorePendingBytes :: AlexInput -> AlexInput
+ignorePendingBytes (p,c,_ps,s) = (p,c,[],s)
 
+alexInputPrevChar :: AlexInput -> Char
+alexInputPrevChar (_p,c,_bs,_s) = c
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+alexGetByte :: AlexInput -> Maybe (Byte,AlexInput)
+alexGetByte (p,c,(b:bs),s) = Just (b,(p,c,bs,s))
+alexGetByte (_,_,[],[]) = Nothing
+alexGetByte (p,_,[],(c:s))  = let p' = alexMove p c
+                              in case utf8Encode' c of
+                                   (b, bs) -> p' `seq`  Just (b, (p', c, bs, s))
 
 
 
@@ -169,16 +171,16 @@ type Byte = Word8
 -- assuming the usual eight character tab stops.
 
 
+data AlexPosn = AlexPn !Int !Int !Int
+        deriving (Eq,Show)
 
+alexStartPos :: AlexPosn
+alexStartPos = AlexPn 0 1 1
 
-
-
-
-
-
-
-
-
+alexMove :: AlexPosn -> Char -> AlexPosn
+alexMove (AlexPn a l c) '\t' = AlexPn (a+1)  l     (c+alex_tab_size-((c-1) `mod` alex_tab_size))
+alexMove (AlexPn a l _) '\n' = AlexPn (a+1) (l+1)   1
+alexMove (AlexPn a l c) _    = AlexPn (a+1)  l     (c+1)
 
 
 -- -----------------------------------------------------------------------------
@@ -340,25 +342,25 @@ type Byte = Word8
 -- Basic wrapper
 
 
-type AlexInput = (Char,[Byte],String)
 
-alexInputPrevChar :: AlexInput -> Char
-alexInputPrevChar (c,_,_) = c
 
--- alexScanTokens :: String -> [token]
-alexScanTokens str = go ('\n',[],str)
-  where go inp__@(_,_bs,s) =
-          case alexScan inp__ 0 of
-                AlexEOF -> []
-                AlexError _ -> error "lexical error"
-                AlexSkip  inp__' _ln     -> go inp__'
-                AlexToken inp__' len act -> act (take len s) : go inp__'
 
-alexGetByte :: AlexInput -> Maybe (Byte,AlexInput)
-alexGetByte (c,(b:bs),s) = Just (b,(c,bs,s))
-alexGetByte (_,[],[])    = Nothing
-alexGetByte (_,[],(c:s)) = case utf8Encode' c of
-                             (b, bs) -> Just (b, (c, bs, s))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -402,14 +404,14 @@ alexGetByte (_,[],(c:s)) = case utf8Encode' c of
 -- Adds text positions to the basic model.
 
 
-
-
-
-
-
-
-
-
+--alexScanTokens :: String -> [token]
+alexScanTokens str0 = go (alexStartPos,'\n',[],str0)
+  where go inp__@(pos,_,_,str) =
+          case alexScan inp__ 0 of
+                AlexEOF -> []
+                AlexError ((AlexPn _ line column),_,_,_) -> error $ "lexical error at line " ++ (show line) ++ ", column " ++ (show column)
+                AlexSkip  inp__' _ln     -> go inp__'
+                AlexToken inp__' len act -> act pos (take len str) : go inp__'
 
 
 
@@ -10491,69 +10493,109 @@ alex_actions = array (0 :: Int, 56)
   , (0,alex_action_33)
   ]
 
-{-# LINE 48 "tokens.x" #-}
+{-# LINE 50 "tokens.x" #-}
 
 -- Lexed tokens
-data Token = TokenArrow
-           | TokenLeftArrow
-           | TokenDoubleArrow
-           | TokenSemi
-           | TokenComma
-           | TokenInt Int
-           | TokenBackslash
-           | TokenLambda
-           | TokenString String
-           | TokenChar   Char
-           | TokenData
-           | TokenPipe
-           | TokenTypeSign
-           | TokenAssign
-           | TokenLParen
-           | TokenRParen
-           | TokenLBracket
-           | TokenRBracket
-           | TokenQMark
-           | TokenHole  String
-           | TokenIdent String
-           | TokenType  String
-           | Builtin    String
-           | BinOp      String
+data Token = TokenArrow       AlexPosn
+           | TokenLeftArrow   AlexPosn
+           | TokenDoubleArrow AlexPosn
+           | TokenSemi        AlexPosn
+           | TokenComma       AlexPosn
+           | TokenInt         AlexPosn Int
+           | TokenBackslash   AlexPosn
+           | TokenLambda      AlexPosn
+           | TokenString      AlexPosn String
+           | TokenChar        AlexPosn Char
+           | TokenData        AlexPosn
+           | TokenPipe        AlexPosn
+           | TokenTypeSign    AlexPosn
+           | TokenAssign      AlexPosn
+           | TokenLParen      AlexPosn
+           | TokenRParen      AlexPosn
+           | TokenLBracket    AlexPosn
+           | TokenRBracket    AlexPosn
+           | TokenQMark       AlexPosn
+           | TokenHole        AlexPosn String
+           | TokenIdent       AlexPosn String
+           | TokenType        AlexPosn String
+           | Builtin          AlexPosn String
+           | BinOp            AlexPosn String
            deriving Show
 
-scanTokens = alexScanTokens
+-- getters
+getLNum (AlexPn _ l _) = l
+getCNum (AlexPn _ _ c) = c
 
-alex_action_2 =  \s -> Builtin "export"   
-alex_action_3 =  \s -> Builtin "pattern"  
-alex_action_4 =  \s -> Builtin "instance" 
-alex_action_5 =  \s -> Builtin "case"     
-alex_action_6 =  \s -> Builtin "class"    
-alex_action_7 =  \s -> TokenArrow         
-alex_action_8 =  \s -> TokenDoubleArrow   
-alex_action_9 =  \s -> TokenLeftArrow     
-alex_action_10 =  \s -> TokenSemi          
-alex_action_11 =  \s -> TokenComma         
-alex_action_12 =  \s -> TokenInt (read s)  
-alex_action_13 =  \s -> TokenBackslash     
-alex_action_14 =  \s -> TokenLambda        
-alex_action_15 =  \s -> BinOp "+"          
-alex_action_16 =  \s -> BinOp "*"          
-alex_action_17 =  \s -> BinOp "-"          
-alex_action_18 =  \s -> BinOp "/"          
-alex_action_19 =  BinOp . init . tail      
-alex_action_20 =  \s -> TokenString s      
-alex_action_21 =  \(_:s:_) -> TokenChar s  
-alex_action_22 =  \s -> TokenData          
-alex_action_23 =  \s -> TokenPipe          
-alex_action_24 =  \s -> TokenTypeSign      
-alex_action_25 =  \s -> TokenAssign        
-alex_action_26 =  \s -> TokenLParen        
-alex_action_27 =  \s -> TokenRParen        
-alex_action_28 =  \s -> TokenLBracket      
-alex_action_29 =  \s -> TokenRBracket      
-alex_action_30 =  \s -> TokenHole  s       
-alex_action_31 =  \s -> TokenQMark         
-alex_action_32 =  \s -> TokenIdent s       
-alex_action_33 =  \s -> TokenType  s       
+tokenPosn (TokenArrow       p  ) = p
+tokenPosn (TokenLeftArrow   p  ) = p
+tokenPosn (TokenDoubleArrow p  ) = p
+tokenPosn (TokenSemi        p  ) = p
+tokenPosn (TokenComma       p  ) = p
+tokenPosn (TokenInt         p _) = p
+tokenPosn (TokenBackslash   p  ) = p
+tokenPosn (TokenLambda      p  ) = p
+tokenPosn (TokenString      p _) = p
+tokenPosn (TokenChar        p _) = p
+tokenPosn (TokenData        p  ) = p
+tokenPosn (TokenPipe        p  ) = p
+tokenPosn (TokenTypeSign    p  ) = p
+tokenPosn (TokenAssign      p  ) = p
+tokenPosn (TokenLParen      p  ) = p
+tokenPosn (TokenRParen      p  ) = p
+tokenPosn (TokenLBracket    p  ) = p
+tokenPosn (TokenRBracket    p  ) = p
+tokenPosn (TokenQMark       p  ) = p
+tokenPosn (TokenHole        p _) = p
+tokenPosn (TokenIdent       p _) = p
+tokenPosn (TokenType        p _) = p
+tokenPosn (Builtin          p _) = p
+tokenPosn (BinOp            p _) = p
+
+scanTokens :: String -> [Token]
+scanTokens str = go (alexStartPos, '\n', [], str)
+    where go inp@(pos,_,_,str) =
+            case alexScan inp 0 of
+                AlexEOF -> []
+                AlexError ((AlexPn _ line column),_,_,_) -> 
+                    errorWithoutStackTrace (
+                        "\nlexical error at " ++ 
+                        (show line) ++ " line, " ++ 
+                        (show column) ++ " column")
+                AlexSkip  inp' len -> go inp'
+                AlexToken inp' len act -> act pos (take len str) : go inp'
+
+alex_action_2 =  \p s -> Builtin p "export"      
+alex_action_3 =  \p s -> Builtin p "pattern"     
+alex_action_4 =  \p s -> Builtin p "instance"    
+alex_action_5 =  \p s -> Builtin p "case"        
+alex_action_6 =  \p s -> Builtin p "class"       
+alex_action_7 =  \p s -> TokenArrow p            
+alex_action_8 =  \p s -> TokenDoubleArrow p      
+alex_action_9 =  \p s -> TokenLeftArrow p        
+alex_action_10 =  \p s -> TokenSemi p             
+alex_action_11 =  \p s -> TokenComma p            
+alex_action_12 =  \p s -> TokenInt p (read s)     
+alex_action_13 =  \p s -> TokenBackslash p        
+alex_action_14 =  \p s -> TokenLambda p           
+alex_action_15 =  \p s -> BinOp p "+"             
+alex_action_16 =  \p s -> BinOp p "*"             
+alex_action_17 =  \p s -> BinOp p "-"             
+alex_action_18 =  \p s -> BinOp p "/"             
+alex_action_19 =  \p s -> BinOp p (init (tail s)) 
+alex_action_20 =  \p s -> TokenString p s         
+alex_action_21 =  \p (_:s:_) -> TokenChar p s     
+alex_action_22 =  \p s -> TokenData p             
+alex_action_23 =  \p s -> TokenPipe p             
+alex_action_24 =  \p s -> TokenTypeSign p         
+alex_action_25 =  \p s -> TokenAssign p           
+alex_action_26 =  \p s -> TokenLParen p           
+alex_action_27 =  \p s -> TokenRParen p           
+alex_action_28 =  \p s -> TokenLBracket p         
+alex_action_29 =  \p s -> TokenRBracket p         
+alex_action_30 =  \p s -> TokenHole p s           
+alex_action_31 =  \p s -> TokenQMark p            
+alex_action_32 =  \p s -> TokenIdent p s          
+alex_action_33 =  \p s -> TokenType p s           
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- -----------------------------------------------------------------------------
 -- ALEX TEMPLATE
