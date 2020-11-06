@@ -909,17 +909,22 @@ calc tks = happyRunIdentity happySomeParser where
 happySeq = happyDontSeq
 
 
--- TODO Maybe make this prettier
--- monadic parser please
+getWholeLine :: [Token] -> Int -> [Token]
+getWholeLine tokens line = filter p tokens
+     where p = (==) line . Lexer.getLNum . Lexer.tokenPosn
+
 parseError :: [Token] -> a
 parseError [    ] = errorWithoutStackTrace "parse error"
-parseError tokens = errorWithoutStackTrace (
-                        "\nparse error at " ++ 
-                        (show line) ++ " line, " ++ 
-                        (show column) ++ " column")
-                              where pos = Lexer.tokenPosn (last tokens)
-                                    line = getLNum pos
-                                    column = getCNum pos
+parseError tokens = errorWithoutStackTrace ("\nparse error at " ++ 
+     "line " ++ show line ++
+     ", column " ++ show column ++
+     "\n--------------------------------------\n" ++
+     wholeLine ++
+     "\n^\n")
+          where pos = Lexer.tokenPosn (head tokens)
+                column = Lexer.getCNum pos
+                line = Lexer.getLNum pos
+                wholeLine = show $ getWholeLine tokens line
 
 type Program = [ Stm ]
 

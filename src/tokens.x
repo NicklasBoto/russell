@@ -1,7 +1,7 @@
 {
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Lexer where
--- import ParseMonad
+import Data.List
 }
 
 %wrapper "posn"
@@ -44,7 +44,7 @@ tokens :-
     \}                                   { \p s -> TokenRBracket p         }
     \_ [$a $A $digit]*                   { \p s -> TokenHole p s           }
     "?"                                  { \p s -> TokenQMark p            }
-    $a [$a $A \_ \' $digit]*             { \p s -> TokenIdent p s          }
+    $a [$a $A \_ \' $digit]* \!*         { \p s -> TokenIdent p s          }
     $A [$a $A \' $digit]*                { \p s -> TokenType p s           }
    
 {
@@ -73,7 +73,33 @@ data Token = TokenArrow       AlexPosn
            | TokenType        AlexPosn String
            | Builtin          AlexPosn String
            | BinOp            AlexPosn String
-           deriving Show
+
+instance Show Token where
+    show (TokenArrow       p  ) = "->"
+    show (TokenLeftArrow   p  ) = "<-"
+    show (TokenDoubleArrow p  ) = "=>"
+    show (TokenSemi        p  ) = ";"
+    show (TokenComma       p  ) = ","
+    show (TokenInt         p x) = show x
+    show (TokenBackslash   p  ) = "\\"
+    show (TokenLambda      p  ) = "λ"
+    show (TokenString      p s) = s
+    show (TokenChar        p c) = [c]
+    show (TokenTypeSign    p  ) = ":"
+    show (TokenAssign      p  ) = "="
+    show (TokenLParen      p  ) = "("
+    show (TokenRParen      p  ) = ")"
+    show (TokenLBracket    p  ) = "{"
+    show (TokenRBracket    p  ) = "}"
+    show (TokenQMark       p  ) = "?"
+    show (TokenHole        p n) = "_" ++ n
+    show (TokenIdent       p n) = n
+    show (TokenType        p n) = n
+    show (Builtin          p n) = n
+    show (BinOp            p n) = n
+
+instance {-# OVERLAPPING #-} Show [Token] where
+    show = intercalate " " . map show
 
 -- getters
 getLNum (AlexPn _ l _) = l
