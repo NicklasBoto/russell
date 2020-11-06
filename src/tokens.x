@@ -14,38 +14,39 @@ tokens :-
     
     $white+                              ;
     "--".*                               ;
-    export                               { \p s -> Builtin p "export"      }
-    pattern                              { \p s -> Builtin p "pattern"     }
-    instance                             { \p s -> Builtin p "instance"    }
-    case                                 { \p s -> Builtin p "case"        }
-    class                                { \p s -> Builtin p "class"       }
-    "->"                                 { \p s -> TokenArrow p            }
-    "=>"                                 { \p s -> TokenDoubleArrow p      }
-    "<-"                                 { \p s -> TokenLeftArrow p        }
-    ";"                                  { \p s -> TokenSemi p             }
-    ","                                  { \p s -> TokenComma p            }
-    $digit+                              { \p s -> TokenInt p (read s)     }
-    \\                                   { \p s -> TokenBackslash p        }
-    "λ"                                  { \p s -> TokenLambda p           }
-    "+"                                  { \p s -> BinOp p "+"             }
-    "*"                                  { \p s -> BinOp p "*"             }
-    "-"                                  { \p s -> BinOp p "-"             }
-    "/"                                  { \p s -> BinOp p "/"             }
-    ` $a [$a $A \_ \' $digit]* `         { \p s -> BinOp p (init (tail s)) }
-    \"([^\"\\]*(\\.[^\"\\]*)*)\"         { \p s -> TokenString p s         }
-    \' $a \'                             { \p (_:s:_) -> TokenChar p s     }
-    ::\=                                 { \p s -> TokenData p             }
-    \|                                   { \p s -> TokenPipe p             }
-    :                                    { \p s -> TokenTypeSign p         }
-    \=                                   { \p s -> TokenAssign p           }
-    \(                                   { \p s -> TokenLParen p           }
-    \)                                   { \p s -> TokenRParen p           }
-    \{                                   { \p s -> TokenLBracket p         }
-    \}                                   { \p s -> TokenRBracket p         }
-    \_ [$a $A $digit]*                   { \p s -> TokenHole p s           }
-    "?"                                  { \p s -> TokenQMark p            }
-    $a [$a $A \_ \' $digit]* \!*         { \p s -> TokenIdent p s          }
-    $A [$a $A \' $digit]*                { \p s -> TokenType p s           }
+    export                               { \p s -> Builtin p "export"        }
+    pattern                              { \p s -> Builtin p "pattern"       }
+    instance                             { \p s -> Builtin p "instance"      }
+    case                                 { \p s -> Builtin p "case"          }
+    class                                { \p s -> Builtin p "class"         }
+    "->"                                 { \p s -> TokenArrow p              }
+    "=>"                                 { \p s -> TokenDoubleArrow p        }
+    "<-"                                 { \p s -> TokenLeftArrow p          }
+    ";"                                  { \p s -> TokenSemi p               }
+    ","                                  { \p s -> TokenComma p              }
+    $digit+                              { \p s -> TokenInt p (read s)       }
+    \\                                   { \p s -> TokenBackslash p          }
+    "λ"                                  { \p s -> TokenLambda p             }
+    "+"                                  { \p s -> BinOp p "+"               }
+    "*"                                  { \p s -> BinOp p "*"               }
+    "-"                                  { \p s -> BinOp p "-"               }
+    "/"                                  { \p s -> BinOp p "/"               }
+    ` $a [$a $A \_ \' $digit]* `         { \p s -> BinOp p (init (tail s))   }
+    \"([^\"\\]*(\\.[^\"\\]*)*)\"         { \p s -> TokenString p s           }
+    \' $a \'                             { \p (_:s:_) -> TokenChar p s       }
+    ::\=                                 { \p s -> TokenData p               }
+    \|                                   { \p s -> TokenPipe p               }
+    :                                    { \p s -> TokenTypeSign p           }
+    \=                                   { \p s -> TokenAssign p             }
+    \(                                   { \p s -> TokenLParen p             }
+    \)                                   { \p s -> TokenRParen p             }
+    \{                                   { \p s -> TokenLBracket p           }
+    \}                                   { \p s -> TokenRBracket p           }
+    \_ [$a $A $digit]*                   { \p s -> TokenHole p s             }
+    "?"                                  { \p s -> TokenQMark p              }
+    $a [$a $A \_ \' $digit]*             { \p s -> TokenIdent p s            }
+    $a [$a $A \_ \' $digit]*\!           { \p s -> TokenMacroCall p (init s) }
+    $A [$a $A \' $digit]*                { \p s -> TokenType p s             }
    
 {
 -- Lexed tokens
@@ -70,6 +71,7 @@ data Token = TokenArrow       AlexPosn
            | TokenQMark       AlexPosn
            | TokenHole        AlexPosn String
            | TokenIdent       AlexPosn String
+           | TokenMacroCall   AlexPosn String
            | TokenType        AlexPosn String
            | Builtin          AlexPosn String
            | BinOp            AlexPosn String
@@ -94,6 +96,7 @@ instance Show Token where
     show (TokenQMark       p  ) = "?"
     show (TokenHole        p n) = "_" ++ n
     show (TokenIdent       p n) = n
+    show (TokenMacroCall   p n) = n
     show (TokenType        p n) = n
     show (Builtin          p n) = n
     show (BinOp            p n) = n
@@ -126,6 +129,7 @@ tokenPosn (TokenRBracket    p  ) = p
 tokenPosn (TokenQMark       p  ) = p
 tokenPosn (TokenHole        p _) = p
 tokenPosn (TokenIdent       p _) = p
+tokenPosn (TokenMacroCall   p _) = p
 tokenPosn (TokenType        p _) = p
 tokenPosn (Builtin          p _) = p
 tokenPosn (BinOp            p _) = p

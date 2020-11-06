@@ -25,6 +25,7 @@ import Data.List
     "}"         { TokenRBracket    _  }
 --    "?"         { TokenQMark        }
     ident       { TokenIdent _ $$     }
+    macro       { TokenMacroCall _ $$ }
     int         { TokenInt   _ $$     }
     type        { TokenType  _ $$     }
     hole        { TokenHole  _ $$     }
@@ -66,6 +67,7 @@ Exp : "(" Exp ")"              {              $2 }
     | ident "->" Exp           { LambdaExp $1 $3 }
     | Const                    { ConstExp     $1 }
     | ident "(" Args ")"       { CallExp   $1 (reverse $3) }
+    | macro "(" Args ")"       { MacroExp  $1 (reverse $3) }
     | type                     { TypeCon   $1 [] }
     | type "(" Args ")"        { TypeCon   $1 (reverse $3) }
     | case Exp "{" Case "}"    { CaseExp   $2 (reverse $4) }
@@ -126,7 +128,7 @@ data Types = VoidType
            | TypeN String
            deriving Show
 
-data Exp = PatternExp [ (Const, Exp) ]
+data Exp = MacroExp Name [ Exp ]
          | VoidExp
          | VarExp Name
          | LambdaExp Name Exp

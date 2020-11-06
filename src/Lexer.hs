@@ -527,7 +527,6 @@ alex_base = listArray (0 :: Int, 86)
   , 3517
   , 3607
   , 3697
-  , -20
   , 3787
   , 3877
   , 3967
@@ -539,6 +538,7 @@ alex_base = listArray (0 :: Int, 86)
   , 4507
   , 4597
   , 4687
+  , 0
   , 4771
   ]
 
@@ -557,7 +557,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 29
   , 4
   , 36
-  , 74
+  , 0
   , 0
   , 28
   , 28
@@ -637,11 +637,11 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 68
   , 73
-  , 78
+  , 77
   , 73
   , 73
   , 73
-  , 75
+  , 74
   , 73
   , 73
   , 73
@@ -2424,7 +2424,7 @@ alex_table = listArray (0 :: Int, 5026)
   , -1
   , -1
   , -1
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -2669,7 +2669,7 @@ alex_table = listArray (0 :: Int, 5026)
   , -1
   , -1
   , -1
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -2759,7 +2759,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -2849,7 +2849,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -2939,7 +2939,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3104,7 +3104,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 58
   , 58
   , 58
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3194,7 +3194,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3284,7 +3284,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3374,7 +3374,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3464,7 +3464,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3554,7 +3554,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3644,7 +3644,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -3718,86 +3718,6 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 83
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 74
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
   , 73
   , 73
   , 73
@@ -3814,6 +3734,21 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
+  , 85
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
   , 73
   , 73
   , 73
@@ -3824,7 +3759,72 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 81
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 85
   , 0
   , 0
   , 0
@@ -3914,7 +3914,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4004,7 +4004,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4068,7 +4068,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 0
   , 73
   , 0
-  , 81
+  , 80
   , 73
   , 73
   , 73
@@ -4094,7 +4094,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4158,114 +4158,6 @@ alex_table = listArray (0 :: Int, 5026)
   , 0
   , 73
   , 0
-  , 77
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 74
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
   , 76
   , 73
   , 73
@@ -4274,7 +4166,115 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 85
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 75
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 85
   , 0
   , 0
   , 0
@@ -4364,7 +4364,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4454,7 +4454,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4544,7 +4544,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4608,6 +4608,100 @@ alex_table = listArray (0 :: Int, 5026)
   , 0
   , 73
   , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 78
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 85
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
   , 73
   , 73
   , 73
@@ -4630,101 +4724,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 79
   , 73
   , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 74
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 80
-  , 73
-  , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4814,7 +4814,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4904,7 +4904,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -4994,7 +4994,97 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 0
+  , 0
+  , 0
+  , 0
+  , 73
+  , 0
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 83
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 73
+  , 85
   , 0
   , 0
   , 0
@@ -5084,97 +5174,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 0
-  , 0
-  , 0
-  , 0
-  , 73
-  , 0
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
   , 85
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 73
-  , 74
   , 0
   , 0
   , 0
@@ -5264,7 +5264,7 @@ alex_table = listArray (0 :: Int, 5026)
   , 73
   , 73
   , 73
-  , 74
+  , 85
   , 0
   , 0
   , 0
@@ -5588,7 +5588,7 @@ alex_check = listArray (0 :: Int, 5026)
   , 45
   , 58
   , 62
-  , 33
+  , -1
   , -1
   , 9
   , 10
@@ -10841,11 +10841,11 @@ alex_actions = array (0 :: Int, 57)
   , (4,alex_action_32)
   , (3,alex_action_32)
   , (2,alex_action_32)
-  , (1,alex_action_32)
-  , (0,alex_action_33)
+  , (1,alex_action_33)
+  , (0,alex_action_34)
   ]
 
-{-# LINE 50 "tokens.x" #-}
+{-# LINE 51 "tokens.x" #-}
 
 -- Lexed tokens
 data Token = TokenArrow       AlexPosn
@@ -10869,6 +10869,7 @@ data Token = TokenArrow       AlexPosn
            | TokenQMark       AlexPosn
            | TokenHole        AlexPosn String
            | TokenIdent       AlexPosn String
+           | TokenMacroCall   AlexPosn String
            | TokenType        AlexPosn String
            | Builtin          AlexPosn String
            | BinOp            AlexPosn String
@@ -10893,6 +10894,7 @@ instance Show Token where
     show (TokenQMark       p  ) = "?"
     show (TokenHole        p n) = "_" ++ n
     show (TokenIdent       p n) = n
+    show (TokenMacroCall   p n) = n
     show (TokenType        p n) = n
     show (Builtin          p n) = n
     show (BinOp            p n) = n
@@ -10925,6 +10927,7 @@ tokenPosn (TokenRBracket    p  ) = p
 tokenPosn (TokenQMark       p  ) = p
 tokenPosn (TokenHole        p _) = p
 tokenPosn (TokenIdent       p _) = p
+tokenPosn (TokenMacroCall   p _) = p
 tokenPosn (TokenType        p _) = p
 tokenPosn (Builtin          p _) = p
 tokenPosn (BinOp            p _) = p
@@ -10942,38 +10945,39 @@ scanTokens str = go (alexStartPos, '\n', [], str)
                 AlexSkip  inp' len -> go inp'
                 AlexToken inp' len act -> act pos (take len str) : go inp'
 
-alex_action_2 =  \p s -> Builtin p "export"      
-alex_action_3 =  \p s -> Builtin p "pattern"     
-alex_action_4 =  \p s -> Builtin p "instance"    
-alex_action_5 =  \p s -> Builtin p "case"        
-alex_action_6 =  \p s -> Builtin p "class"       
-alex_action_7 =  \p s -> TokenArrow p            
-alex_action_8 =  \p s -> TokenDoubleArrow p      
-alex_action_9 =  \p s -> TokenLeftArrow p        
-alex_action_10 =  \p s -> TokenSemi p             
-alex_action_11 =  \p s -> TokenComma p            
-alex_action_12 =  \p s -> TokenInt p (read s)     
-alex_action_13 =  \p s -> TokenBackslash p        
-alex_action_14 =  \p s -> TokenLambda p           
-alex_action_15 =  \p s -> BinOp p "+"             
-alex_action_16 =  \p s -> BinOp p "*"             
-alex_action_17 =  \p s -> BinOp p "-"             
-alex_action_18 =  \p s -> BinOp p "/"             
-alex_action_19 =  \p s -> BinOp p (init (tail s)) 
-alex_action_20 =  \p s -> TokenString p s         
-alex_action_21 =  \p (_:s:_) -> TokenChar p s     
-alex_action_22 =  \p s -> TokenData p             
-alex_action_23 =  \p s -> TokenPipe p             
-alex_action_24 =  \p s -> TokenTypeSign p         
-alex_action_25 =  \p s -> TokenAssign p           
-alex_action_26 =  \p s -> TokenLParen p           
-alex_action_27 =  \p s -> TokenRParen p           
-alex_action_28 =  \p s -> TokenLBracket p         
-alex_action_29 =  \p s -> TokenRBracket p         
-alex_action_30 =  \p s -> TokenHole p s           
-alex_action_31 =  \p s -> TokenQMark p            
-alex_action_32 =  \p s -> TokenIdent p s          
-alex_action_33 =  \p s -> TokenType p s           
+alex_action_2 =  \p s -> Builtin p "export"        
+alex_action_3 =  \p s -> Builtin p "pattern"       
+alex_action_4 =  \p s -> Builtin p "instance"      
+alex_action_5 =  \p s -> Builtin p "case"          
+alex_action_6 =  \p s -> Builtin p "class"         
+alex_action_7 =  \p s -> TokenArrow p              
+alex_action_8 =  \p s -> TokenDoubleArrow p        
+alex_action_9 =  \p s -> TokenLeftArrow p          
+alex_action_10 =  \p s -> TokenSemi p               
+alex_action_11 =  \p s -> TokenComma p              
+alex_action_12 =  \p s -> TokenInt p (read s)       
+alex_action_13 =  \p s -> TokenBackslash p          
+alex_action_14 =  \p s -> TokenLambda p             
+alex_action_15 =  \p s -> BinOp p "+"               
+alex_action_16 =  \p s -> BinOp p "*"               
+alex_action_17 =  \p s -> BinOp p "-"               
+alex_action_18 =  \p s -> BinOp p "/"               
+alex_action_19 =  \p s -> BinOp p (init (tail s))   
+alex_action_20 =  \p s -> TokenString p s           
+alex_action_21 =  \p (_:s:_) -> TokenChar p s       
+alex_action_22 =  \p s -> TokenData p               
+alex_action_23 =  \p s -> TokenPipe p               
+alex_action_24 =  \p s -> TokenTypeSign p           
+alex_action_25 =  \p s -> TokenAssign p             
+alex_action_26 =  \p s -> TokenLParen p             
+alex_action_27 =  \p s -> TokenRParen p             
+alex_action_28 =  \p s -> TokenLBracket p           
+alex_action_29 =  \p s -> TokenRBracket p           
+alex_action_30 =  \p s -> TokenHole p s             
+alex_action_31 =  \p s -> TokenQMark p              
+alex_action_32 =  \p s -> TokenIdent p s            
+alex_action_33 =  \p s -> TokenMacroCall p (init s) 
+alex_action_34 =  \p s -> TokenType p s             
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- -----------------------------------------------------------------------------
 -- ALEX TEMPLATE
