@@ -18,12 +18,16 @@ tokens :-
     pattern                              { \p s -> Builtin p "pattern"       }
     instance                             { \p s -> Builtin p "instance"      }
     case                                 { \p s -> Builtin p "case"          }
-    class                                { \p s -> Builtin p "class"         }
+    for                                  { \p s -> Builtin p "for"           }
+    in                                   { \p s -> Builtin p "in"            }
+    if                                   { \p s -> Builtin p "if"            }
+    else                                 { \p s -> Builtin p "else"          }
     "->"                                 { \p s -> TokenArrow p              }
     "=>"                                 { \p s -> TokenDoubleArrow p        }
     "<-"                                 { \p s -> TokenLeftArrow p          }
     ";"                                  { \p s -> TokenSemi p               }
     ","                                  { \p s -> TokenComma p              }
+    ".."                                 { \p s -> TokenDot p                }
     $digit+                              { \p s -> TokenInt p (read s)       }
     \\                                   { \p s -> TokenBackslash p          }
     "λ"                                  { \p s -> TokenLambda p             }
@@ -31,17 +35,25 @@ tokens :-
     "*"                                  { \p s -> BinOp p "*"               }
     "-"                                  { \p s -> BinOp p "-"               }
     "/"                                  { \p s -> BinOp p "/"               }
+    ">="                                 { \p s -> BinOp p ">="              }
+    "<="                                 { \p s -> BinOp p "<="              }
     ` $a [$a $A \_ \' $digit]* `         { \p s -> BinOp p (init (tail s))   }
     \"([^\"\\]*(\\.[^\"\\]*)*)\"         { \p s -> TokenString p s           }
-    \' $a \'                             { \p (_:s:_) -> TokenChar p s       }
+    \' . \'                              { \p (_:s:_) -> TokenChar p s       }
     ::\=                                 { \p s -> TokenData p               }
-    \|                                   { \p s -> TokenPipe p               }
+    \|                                   { \p s -> BinOp p "or"              }
+    \&                                   { \p s -> BinOp p "and"             }
     :                                    { \p s -> TokenTypeSign p           }
+    ::                                   { \p s -> BinOp p "::"              }
     \=                                   { \p s -> TokenAssign p             }
     \(                                   { \p s -> TokenLParen p             }
     \)                                   { \p s -> TokenRParen p             }
     \{                                   { \p s -> TokenLBracket p           }
     \}                                   { \p s -> TokenRBracket p           }
+    "<"                                  { \p s -> BinOp p "<"               }
+    ">"                                  { \p s -> BinOp p ">"               }
+    \[                                   { \p s -> TokenLList p              }
+    \]                                   { \p s -> TokenRList p              }
     \_ [$a $A $digit]*                   { \p s -> TokenHole p s             }
     "?"                                  { \p s -> TokenQMark p              }
     $a [$a $A \_ \' $digit]*             { \p s -> TokenIdent p s            }
@@ -55,6 +67,7 @@ data Token = TokenArrow       AlexPosn
            | TokenDoubleArrow AlexPosn
            | TokenSemi        AlexPosn
            | TokenComma       AlexPosn
+           | TokenDot         AlexPosn
            | TokenInt         AlexPosn Int
            | TokenBackslash   AlexPosn
            | TokenLambda      AlexPosn
@@ -68,6 +81,8 @@ data Token = TokenArrow       AlexPosn
            | TokenRParen      AlexPosn
            | TokenLBracket    AlexPosn
            | TokenRBracket    AlexPosn
+           | TokenLList       AlexPosn
+           | TokenRList       AlexPosn
            | TokenQMark       AlexPosn
            | TokenHole        AlexPosn String
            | TokenIdent       AlexPosn String
@@ -82,6 +97,7 @@ instance Show Token where
     show (TokenDoubleArrow p  ) = "=>"
     show (TokenSemi        p  ) = ";"
     show (TokenComma       p  ) = ","
+    show (TokenDot         p  ) = ".."
     show (TokenInt         p x) = show x
     show (TokenBackslash   p  ) = "\\"
     show (TokenLambda      p  ) = "λ"
@@ -93,6 +109,8 @@ instance Show Token where
     show (TokenRParen      p  ) = ")"
     show (TokenLBracket    p  ) = "{"
     show (TokenRBracket    p  ) = "}"
+    show (TokenLList       p  ) = "["
+    show (TokenRList       p  ) = "]"
     show (TokenQMark       p  ) = "?"
     show (TokenHole        p n) = "_" ++ n
     show (TokenIdent       p n) = n
@@ -113,6 +131,7 @@ tokenPosn (TokenLeftArrow   p  ) = p
 tokenPosn (TokenDoubleArrow p  ) = p
 tokenPosn (TokenSemi        p  ) = p
 tokenPosn (TokenComma       p  ) = p
+tokenPosn (TokenDot         p  ) = p
 tokenPosn (TokenInt         p _) = p
 tokenPosn (TokenBackslash   p  ) = p
 tokenPosn (TokenLambda      p  ) = p
@@ -126,6 +145,8 @@ tokenPosn (TokenLParen      p  ) = p
 tokenPosn (TokenRParen      p  ) = p
 tokenPosn (TokenLBracket    p  ) = p
 tokenPosn (TokenRBracket    p  ) = p
+tokenPosn (TokenLList       p  ) = p
+tokenPosn (TokenRList       p  ) = p
 tokenPosn (TokenQMark       p  ) = p
 tokenPosn (TokenHole        p _) = p
 tokenPosn (TokenIdent       p _) = p

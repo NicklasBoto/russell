@@ -1,6 +1,6 @@
 module Codegen where
 
-import Parser
+import Parser ( parse )
 
 parser :: String -> IO ()
 parser file = parse =<< readFile file
