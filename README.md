@@ -34,11 +34,9 @@ species Nameable a => a -> String {
     Cat(n) => "cat"
 }
 
-main :-> () { 
-    () => {
-        petName <- name(jack);
-        petType <- species(jack);
-        println!("Hello, my name is {0} and I am a {1}", petName, petType)
-    }
+main : () { 
+    petName <- name(jack);
+    petType <- species(jack);
+    println!("Hello, my name is {0} and I am a {1}", petName, petType)
 }
 ```
