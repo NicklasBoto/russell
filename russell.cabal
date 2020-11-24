@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9592d67b9e25aa65aea3d50395e5f48a0db74a63fa6530d6a8d4600e514f41de
+-- hash: 9a24648df153046e83274f97e84a1743f98f27180a215f1cddbb0502ded2c483
 
 name:           russell
 version:        0.1.0.0
@@ -31,8 +31,8 @@ library
       Codegen
       Lexer
       Lib
-      ParseMonad
       Parser
+      TypeChecker
   other-modules:
       Paths_russell
   hs-source-dirs:

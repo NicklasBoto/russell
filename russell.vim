@@ -18,19 +18,19 @@ hi def link rTypeClass Type
 syn keyword rKeyword pattern case class instance for let in if then else return upto
 hi def link rKeyword Statement
 
-syn match rIType "\I\+\s*\(:\)\@="
+syn match rIType "\(\I\|\d\)\+\s*\(:\)\@="
 hi def link rIType Identifier
 
-syn match rIdent "\I\+\s*\(=\)\@="
+syn match rIdent "\(\I\|\d\)\+\s*\(=\)\@="
 hi def link rIdent Identifier
 
 syn match rType "[A-Z]\+[a-z]*"
 hi def link rType Constant
 
-syn match rMacro "\I\+!\s*\((\)\@="
+syn match rMacro "\(\I\|\d\)\+!\s*\((\)\@="
 hi def link rMacro Special
 
-syn match rFCall "\I\+\((\)\@="
+syn match rFCall "\(\I\|\d\)\+\((\)\@="
 hi def link rFCall Function
 
 syn keyword rCommentSpex contained TODO FIXME XXX HACK COOL
