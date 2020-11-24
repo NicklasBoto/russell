@@ -29,6 +29,10 @@ import Data.List
     "]"         { TokenRList       _  }
     "<"         { BinOp _ "<"         }
     ">"         { BinOp _ ">"         }
+    "-"         { BinOp _ "-"         }
+    "+"         { BinOp _ "+"         }
+    "*"         { BinOp _ "*"         }
+    "/"         { BinOp _ "/"         }
 --    "?"         { TokenQMark        }
     ident       { TokenIdent _ $$     }
     macro       { TokenMacroCall _ $$ }
@@ -47,7 +51,9 @@ import Data.List
 
 %right "->"
 %right "<-"
-%left binop
+%left "+" "-"
+%left "*" "/"
+%left NEG
 
 %%
 
@@ -56,7 +62,7 @@ Stms :: { Program }
      | Stm          {  [ $1 ] }
 
 Stm : type "::=" "{" TypeDef "}"               { TypeStm $1 []   (reverse $4) }
-    | type "<" ident ">" "::=" "{" TypeDef "}" { TypeStm $1 [$3] (reverse $7) }
+    | type "<" TypeGArgs ">" "::=" "{" TypeDef "}" { TypeStm $1 (reverse $3) (reverse $7) }
     | ident ":" Type                           { SignStm       $1 (reverse $3) }
     | ident ":" Types "{" Exps "}"             { FuncStm       $1 (reverse $5) [$3] }
     | ident ":" Type1 "{" Pattern "}"          { PatternStm $1    (reverse $3) (reverse $5) }
@@ -64,6 +70,7 @@ Stm : type "::=" "{" TypeDef "}"               { TypeStm $1 []   (reverse $4) }
     | ident "=" Exp ":" Type                   { FuncStm  $1 [$3] (reverse $5) } -- spruce this up
     | ident "=" "{" Exps "}"                   { FuncStm  $1      (reverse $4)  [] } -- pull out the type
     | ident "=" "{" Exps "}" ":" Type          { FuncStm  $1      (reverse $4)  (reverse $7) }
+    | ";" Exp                                      { Eval $2 }
 --    | class type ident   "{" "}"     { Class               }
 --    | export type        "{" "}"     { Export $2           }
 --    | export             "{" "}"     { Export "Main"       }
@@ -72,11 +79,17 @@ Stm : type "::=" "{" TypeDef "}"               { TypeStm $1 []   (reverse $4) }
 
 Exp : "(" Exp ")"              {              $2 }
     | "(" ")"                  { VoidExp         }
-    | Exp binop Exp            { OpExp  $2 $1 $3 }
+--    | Exp binop Exp            { OpExp  $2 $1 $3 }
     | ident "<-" Exp           { LetExp    $1 $3 }
     | ident                    { VarExp       $1 }
-    | ident "->" Exp           { LambdaExp $1 $3 }
+    | ident "->" Exp           { LambdaExp $1 [$3] }
+    | ident "->" "{" Exps "}"  { LambdaExp $1  $4  }
     | Const                    { ConstExp     $1 }
+    | Exp "+" Exp              { OpExp "+" $1 $3 }
+    | Exp "-" Exp              { OpExp "-" $1 $3 }
+--    |     "-" Exp %prec NEG    { OpExp "-"  0 $2 } -- FIXME pls pares negatives better
+    | Exp "*" Exp              { OpExp "*" $1 $3 }
+    | Exp "/" Exp              { OpExp "/" $1 $3 }
     | ident "(" Args ")"       { CallExp   $1 (reverse $3) }
     | macro "(" Args ")"       { MacroExp  $1 (reverse $3) }
     | type                     { TypeCon   $1 [] }
@@ -88,22 +101,26 @@ Exp : "(" Exp ")"              {              $2 }
     | "(" Args1 ")"            { TupleExp (reverse $2) }
     | if   Exp "{" Exps "}"    { IfExp   $2 (reverse $4) }
     | else     "{" Exps "}"    { ElseExp    (reverse $3) }
-    | for ident in Exp "{" Exps "}" { ForExp $2 $4 (reverse $6) }
+    | for LoopVar in Exp "{" Exps "}" { ForExp $2 $4 (reverse $6) }
 
-Range : "[" int ".." int "]" { RangeExp (Bound $2) (Bound $4)     1 }
-      | "["     ".." int "]" { RangeExp (Bound  0) (Bound $3)     1 }
-      | "[" int ".."     "]" { RangeExp (Bound $2)  Inf           2 }
+LoopVar : ident           { $1 }
+        | hole            { $1 }
+        | "(" LoopVar ")" { $2 }
+
+Range : "[" Exp ".." Exp "]" { RangeExp (Bound $2) (Bound $4)     1 }
+      | "["     ".." Exp "]" { RangeExp (Bound  0) (Bound $3)     1 }
+      | "[" Exp ".."     "]" { RangeExp (Bound $2)  Inf           2 }
       | "["     ".."     "]" { RangeExp  NInf       Inf           1 }
-      | "[" int ".." int ")" { RangeExp (Bound $2) (Bound ($4-1)) 1 }
-      | "["     ".." int ")" { RangeExp (Bound  0) (Bound ($3-1)) 1 }
---      | int "," int ".." int { RangeExp (Bound $1) (Bound $5) ($3 - $1) }
---      | int "," int ".."     { RangeExp (Bound $1)  Inf       ($3 - $1) }
+      | "[" Exp ".." Exp ")" { RangeExp (Bound $2) (Bound ($4-1)) 1 }
+      | "["     ".." Exp ")" { RangeExp (Bound  0) (Bound ($3-1)) 1 }
+--      | Exp "," Exp ".." Exp { RangeExp (Bound $1) (Bound $5) ($3 - $1) }
+--      | Exp "," Exp ".."     { RangeExp (Bound $1)  Inf       ($3 - $1) }
 
 Args : {- empty -}             { [    ] }
      | Exp                     { [ $1 ] }
      | Args "," Exp            { $3 : $1 }
 
-Args1 : Exp   "," Exp            { [$1, $3] }
+Args1 : Exp   "," Exp            { [$3, $1] }
       | Args1 "," Exp            {  $3 : $1 } 
 
 Case : Case1                   { [ $1 ] }
@@ -123,6 +140,7 @@ Const : int                 { Int32 $1 }
 
 Exps : Exp                  { [ $1 ] }
      | Exps ";" Exp         { $3 : $1 }
+     | Exps     Exp         { $2 : $1 }
 
 Types : type                  { TypeN $1 [] }
       | type "<" TypeArgs ">" { TypeN $1 (reverse $3) } 
@@ -142,6 +160,9 @@ Type : Types                 { [ $1 ] }
      | Type "->" Types       { $3 : $1 }  
 
 Type1 : Type "->" Types      { $3 : $1 }
+
+TypeGArgs : ident               { [ $1 ] }
+          | TypeGArgs "," ident { $3 : $1 }
 
 {
 getWholeLine :: [Token] -> Int -> [Token]
@@ -166,14 +187,15 @@ parseError :: [Token] -> a
 parseError [    ] = errorWithoutStackTrace "parse error"
 parseError tokens = errorWithoutStackTrace $ errorText tokens
 
-
-
 type Program = [ Stm ]
 
 instance {-# OVERLAPPING #-} Show Program where
     show = intercalate "\n" . map show
 
-data Range = Bound Int | Inf | NInf deriving Show
+data Range = Bound Exp
+           | Inf 
+           | NInf 
+           deriving Show
 
 data Types = VoidType
            | TypeN String [ Types ]
@@ -183,7 +205,7 @@ data Types = VoidType
 data Exp = VoidExp
          | MacroExp  Name [ Exp ]
          | VarExp    Name
-         | LambdaExp Name Exp
+         | LambdaExp Name [ Exp ]
          | LetExp    Name Exp
          | ConstExp  Const
          | OpExp     Name Exp Exp
@@ -199,6 +221,12 @@ data Exp = VoidExp
          | ElseExp   [ Exp ]
          | ForExp    Name Exp [ Exp ]
          deriving Show
+
+instance Num Exp where
+     (+) = OpExp "+"
+     (-) = OpExp "-"
+     (*) = OpExp "*"
+     fromInteger = ConstExp . Int32 . fromInteger
 
 data Const = Int32 Int
            | Str   String

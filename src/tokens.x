@@ -7,8 +7,8 @@ import Data.List
 %wrapper "posn"
 
 $digit = 0-9
-$a = [a-z]
-$A = [A-Z]
+$a = [a-zåäöλ]
+$A = [A-ZÅÄÖ]
 
 tokens :-
     
@@ -30,13 +30,13 @@ tokens :-
     ".."                                 { \p s -> TokenDot p                }
     $digit+                              { \p s -> TokenInt p (read s)       }
     \\                                   { \p s -> TokenBackslash p          }
-    "λ"                                  { \p s -> TokenLambda p             }
     "+"                                  { \p s -> BinOp p "+"               }
     "*"                                  { \p s -> BinOp p "*"               }
     "-"                                  { \p s -> BinOp p "-"               }
     "/"                                  { \p s -> BinOp p "/"               }
     ">="                                 { \p s -> BinOp p ">="              }
     "<="                                 { \p s -> BinOp p "<="              }
+    "=="                                 { \p s -> BinOp p "=="              }
     ` $a [$a $A \_ \' $digit]* `         { \p s -> BinOp p (init (tail s))   }
     \"([^\"\\]*(\\.[^\"\\]*)*)\"         { \p s -> TokenString p s           }
     \' . \'                              { \p (_:s:_) -> TokenChar p s       }
